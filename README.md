@@ -77,3 +77,9 @@ Si todo sale bien, la API estará disponible en **http://localhost:8080**
 La documentación de la API se genera automáticamente y está disponible en **https://localhost:8080/docs/api**. Permite probar los endpoints y visualizar los esquemas de peticiones y respuestas.
 
 La herramientra de prueba y visualización de la API GraphQL se encuentra en **https://localhost:8080/graphiql**
+
+### Ejecutar las pruebas
+
+```bash
+docker compose exec -it app php artisan test
+```

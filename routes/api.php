@@ -8,6 +8,6 @@ use App\Http\Controllers\Auth\{
 };
 
 Route::prefix('auth')->group(function () {
-    Route::post('register', RegisterController::class);
-    Route::post('login', LoginController::class);
+    Route::post('register', RegisterController::class)->name('auth.register');
+    Route::post('login', LoginController::class)->name('auth.login');
 });
