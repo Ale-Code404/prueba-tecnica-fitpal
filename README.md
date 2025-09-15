@@ -10,6 +10,12 @@
 -   Redis
 -   Docker
 
+## Objetivo y funcionalidades
+
+El sistema de gestión de cursos y horarios es una herramienta para la asignación de horarios a diversas clases por parte de docentes, de manera que un estudiante puede tomar una o varias clases en el horario que más le parezca.
+
+Este sistema puede ser esencialmente util de integrar en instituciones educativas o ambientes de asignación de encuentros como talleres o convenciones al proveer una forma sencilla de apuntarse a una clase o curso, con un dia de inicio y un horario establecido.
+
 ## Arquitectura de la solución
 
 La solución está basada en una arquitectura de servicios desacoplados, orientados a una sola responsabilidad y utilizando el patrón repositorio para la abstracción de la capa de datos. Esto permite mayor mantenibilidad, escalabilidad y facilidad de pruebas.
