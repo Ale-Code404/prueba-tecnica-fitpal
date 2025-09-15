@@ -41,6 +41,21 @@ En **/app** se encuentran los controladores HTTP, modelos Eloquent, providers y 
 
 Los servicios de dominio, DTOs, casos de uso y repositorios se ubican en **src/**, mientras que la capa de infraestructura y las implementaciones concretas de los repositorios se encuentran en subcarpetas `Infra` y `Persistence`.
 
+## Diseño de arquitectura propuesto en AWS
+
+![Diseño en AWS](./static/diagrama-aws-posible-infra.png)
+
+Aqui se plantea una arquitectura para desplegar en AWS el porque y uso de cada servicio es:
+
+-   **Un Reverse Proxy (Cloudflare ej.):** Para proteger y enmascarar la infraestructura del sistema
+-   **API Gateway:** Para facilitar la integración de multiples servicios (en un futuro con microservicios), validacion de encabezados y autenticación.
+-   **ALB**: Para servir como punto de entrada a los servidores y herramienta para controlar el aumento o disminucion de los grupos de escalado.
+-   **Github Actions:** Para desarrollar usando CI/CD y automatizar cada despliegue.
+-   **Zona privada:** Para proteger los recursos del sistema en una VPC.
+-   **EC2 y grupos de autoescalado:** Para ejecutar la aplicación y definir la escalabilidad del sistema, aplicar quotas minimas y maximas, configurar presupuestos. Dichas maquinas se podrian configurar con Image Templates para que ejecuten contenedores de Docker o para instalar manualmente todas las dependencias. Opcionalmente se podria implementar Elastic beanstalk que cumple la misma función.
+-   **RDS:** Con base de datos MySQL para guardar la información del sistema y en lo posible desplegada en varias zonas para asegurar disponibilidad.
+-   **SQS:** Como cola de mensajeria para intercomunicar servicios y desacoplar casos de uso, en principio una cola para cada contexto del dominio.
+
 ## Ejecución del proyecto
 
 Este proyecto utiliza Docker para facilitar la ejecución de las dependencias necesarias. Los comandos principales son:
