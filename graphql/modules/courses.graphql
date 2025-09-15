@@ -1,0 +1,21 @@
+type Course {
+    id: String!
+    name: String!
+    description: String!
+    duration: Int!
+    startsAt: String!
+    createdBy: String!
+}
+
+type Query {
+    courses(page: Int!): [Course!]!
+}
+
+type Mutation {
+    createCourse(
+        name: String!
+        description: String!
+        duration: Int!
+        startsAt: String!
+    ): Course! @validator
+}

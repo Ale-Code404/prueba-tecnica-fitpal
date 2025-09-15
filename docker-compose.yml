@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:  
+  app:
+    build: 
+      context: ./
+      target: dev
+      args:
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
+    ports:
+      - 8080:8080
+    depends_on:
+      - courses-db
+      - redis
+    volumes:
+      - ./:/var/www/html
+
+  courses-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_courses
+      MYSQL_DATABASE: courses
+      MYSQL_USER: courses
+      MYSQL_PASSWORD: courses_secret
+    volumes:
+      - courses-db:/var/lib/mysql
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - 6380:6379
+    volumes:
+      - redis:/data
+
+volumes:
+  courses-db:
+  redis:
