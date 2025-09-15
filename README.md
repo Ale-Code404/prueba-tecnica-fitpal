@@ -1,61 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Technical Test - Fitpal (Laravel API)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Premisa:** Desarrollar una API para la creación y gestión de cursos y usuarios, incluyendo autenticación y administración de recursos.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   PHP 8.4
+-   Laravel 12
+-   MySQL 8.0
+-   Redis
+-   Docker
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Arquitectura de la solución
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+La solución está basada en una arquitectura de servicios desacoplados, orientados a una sola responsabilidad y utilizando el patrón repositorio para la abstracción de la capa de datos. Esto permite mayor mantenibilidad, escalabilidad y facilidad de pruebas.
 
-## Learning Laravel
+Los contextos del sistema estan diseñados sobre la arquitectura DDD, dicha visión promueve el desacoplamiento con la infraestructura del sistema y facilita la migración y desarrollo del sistema a largo plazo al no depender de la implementación.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+En **/app** se encuentran los controladores HTTP, modelos Eloquent, providers y requests. La lógica de negocio y los repositorios se encuentran en **/src**, siguiendo una estructura de carpetas por contexto de dominio:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```
+├── app
+│   ├── Console
+│   ├── Http
+│   │   ├── Controllers
+│   │   └── Requests
+│   ├── Models
+│   └── Providers
+├── src
+│   ├── Auth
+│   ├── Course
+│   ├── User
+│   └── Shared
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Los servicios de dominio, DTOs, casos de uso y repositorios se ubican en **src/**, mientras que la capa de infraestructura y las implementaciones concretas de los repositorios se encuentran en subcarpetas `Infra` y `Persistence`.
 
-## Laravel Sponsors
+## Ejecución del proyecto
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Este proyecto utiliza Docker para facilitar la ejecución de las dependencias necesarias. Los comandos principales son:
 
-### Premium Partners
+```bash
+docker compose up --build -d
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Ejecutar las migraciones y los seeders:
 
-## Contributing
+```bash
+docker compose exec app php artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Genera un par de llaves y un cliente para los tokens de acceso
 
-## Code of Conduct
+```bash
+docker compose exec -it app php artisan passport:keys --force && php artisan passport:client --personal
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Si todo sale bien, la API estará disponible en **http://localhost:8080**
 
-## Security Vulnerabilities
+## Paso a paso sugerido
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Arranca el proyecto usando Docker
+2. Ejecuta migraciones y seeders
+3. Crea un cliente para generar los tokens de acceso.
+4. Puedes acceder usando el usuario administrador por defecto (desde los seeders, contraseña **password**)
 
-## License
+## Componentes del sistema
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   [x] Pruebas de integración
+-   [x] Redis para caching
+-   [x] Uso de capas/responsabilidades bien marcadas
+-   [x] Documentación técnica de la API autogenerada en **/docs/api**
+-   [x] Desarrollo de una API con GraphQL para el manejo cursos y horarios
+
+## Documentación y pruebas
+
+La documentación de la API se genera automáticamente y está disponible en **https://localhost:8080/docs/api**. Permite probar los endpoints y visualizar los esquemas de peticiones y respuestas.
+
+La herramientra de prueba y visualización de la API GraphQL se encuentra en **https://localhost:8080/graphiql**
